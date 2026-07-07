@@ -11,7 +11,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
-import { supabase } from '@/lib/supabase-client';
+import { getSupabaseClient } from '@/lib/supabase-client';
 import { Reveal } from '@/components/motion/Reveal';
 import { TextReveal } from '@/components/motion/TextReveal';
 import { Magnetic } from '@/components/motion/Cursor';
@@ -68,7 +68,9 @@ export function Contact() {
     setStatus('loading');
     setErrorMsg('');
     try {
-      const { error } = await supabase
+      const client = getSupabaseClient();
+      if (!client) throw new Error('Database not configured. Please contact us directly.');
+      const { error } = await client
         .from('consultations')
         .insert([payload]);
       if (error) throw error;
